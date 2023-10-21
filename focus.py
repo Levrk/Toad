@@ -2,13 +2,16 @@
 from pynput.mouse import Listener
 import threading
 import time
+from datetime import datetime
 import sys
+
+
+
 
 def main(input):
     # Global variable to track mouse movement
-    cont=True
-    endTime = int(input)
     startTime = time.time()
+    endTime = int(input)
     # Function to be called when the mouse is moved
     def on_move(x, y):
         global mouse_moved
@@ -18,8 +21,15 @@ def main(input):
         print("ohhhh yeah!")
         listener.stop()
         sys.exit()
-        
+    
+    def Integer_to_minutes(seconds):
+        minutes, seconds = divmod(seconds, 60)
+        return f"{minutes:02d}:{seconds:02d}"
 
+    def getTime():
+            timeLeft = int(input) - ((time.time() - startTime))
+            return Integer_to_minutes(int(timeLeft))
+    
     def timerStopped():
         print("you have moved the mouse")
         return
@@ -45,4 +55,3 @@ def main(input):
         print("Mouse tracking started. Press Ctrl+C to exit.")
         while True:
             timer()
-
