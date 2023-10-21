@@ -46,6 +46,19 @@ def read():
             count+=1
         return count-1
         
+def toList():
+    #returns a list of 5 elements from the todo list with blanks if there are less than 5
+    list = []
+    with open("files/todo.csv", 'r', newline='') as file:
+        reader = csv.reader(file)
+        for _ in range(5):
+            try:
+                row = next(reader)  # Read the next line from the CSV
+                list.append(row[0])
+            except StopIteration:
+                # If there are fewer than 5 lines, add empty strings
+                list.append("")
+    return list
 
 def promote(item):
     # Read the CSV file
