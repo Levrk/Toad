@@ -1,5 +1,3 @@
-#account for double digit number of items
-
 import csv
 
 def todo():
@@ -9,21 +7,31 @@ def todo():
     userInput = input("-> ")
     if (userInput == ""):
         return
-    n = int(userInput[0])
-    command = userInput[1]
-    if (n > count or n < 1):
-        print("your list has no element ", n)
-    elif (command == '+'):
-        promote(userInput[0])
-    elif (command == '-'):
-        demote(userInput[0])
-    elif (command == '!'):
-        delete(userInput[0])
+    if (userInput[0] == '+'):
+        #adding element to todo list
+        add(userInput[1:])
     else:
-        return
+        try:
+            n = int(userInput[0:-1])
+        except:
+            print("invalid input")
+            return
+        command = userInput[-1]
+        if (n > count or n < 1):
+            #index out of bounds
+            print("your list has no element ", n)
+        elif (command == '+'):
+            #promoting element
+            promote(n)
+        elif (command == '-'):
+            #demoting element
+            demote(n)
+        elif (command == '!'):
+            #deleting element
+            delete(n)
 
 def read():
-    with open('todo.csv', 'r') as csv_file:
+    with open('files/todo.csv', 'r') as csv_file:
         reader = csv.reader(csv_file)
         count = 1
         for row in reader:
@@ -34,15 +42,19 @@ def read():
         
 
 def promote(item):
-    print("promote")
+    print("promote ", item)
     return
 
 def demote(item):
-    print("demote")
+    print("demote ", item)
     return
 
 def delete(item):
-    print("delete")
+    print("delete ", item)
+    return
+
+def add(item):
+    print("add ", item)
     return
 
 
