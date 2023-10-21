@@ -62,7 +62,8 @@ class MyWindow(QWidget):
         todoLabel.setAlignment(Qt.AlignCenter)
         layout.addWidget(todoLabel)
         items = todo.toList()
-        print(items)
+
+        #set up item 1
         todo1 = QHBoxLayout()
         todo1del = QPushButton("x")
         todo1Label = QLabel(items[0])
@@ -72,6 +73,12 @@ class MyWindow(QWidget):
         todo1.addWidget(todo1Label)
         todo1.addWidget(todo1pro)
         todo1.addWidget(todo1dem)
+
+        #assign functions
+        todo1del.clicked.connect(lambda: self.delete(1,todoLabel))
+        todo1dem.clicked.connect(lambda: self.demote(1,todoLabel))
+        todo1pro.clicked.connect(lambda: self.promote(1,todoLabel))
+
 
         todo2 = QHBoxLayout()
         todo2del = QPushButton("x")
@@ -83,6 +90,11 @@ class MyWindow(QWidget):
         todo2.addWidget(todo2pro)
         todo2.addWidget(todo2dem)
 
+        #assign functions
+        todo2del.clicked.connect(lambda: self.delete(2,todoLabel))
+        todo2dem.clicked.connect(lambda: self.demote(2,todoLabel))
+        todo2pro.clicked.connect(lambda: self.promote(2,todoLabel))
+
         todo3 = QHBoxLayout()
         todo3del = QPushButton("x")
         todo3Label = QLabel(items[2])
@@ -93,6 +105,11 @@ class MyWindow(QWidget):
         todo3.addWidget(todo3pro)
         todo3.addWidget(todo3dem)
 
+        #assign functions
+        todo3del.clicked.connect(lambda: self.delete(3,todoLabel))
+        todo3dem.clicked.connect(lambda: self.demote(3,todoLabel))
+        todo3pro.clicked.connect(lambda: self.promote(3,todoLabel))
+
         todo4 = QHBoxLayout()
         todo4del = QPushButton("x")
         todo4Label = QLabel(items[3])
@@ -102,6 +119,11 @@ class MyWindow(QWidget):
         todo4.addWidget(todo4Label)
         todo4.addWidget(todo4pro)
         todo4.addWidget(todo4dem)
+
+        #assign functions
+        todo4del.clicked.connect(lambda: self.delete(4,todoLabel))
+        todo4dem.clicked.connect(lambda: self.demote(4,todoLabel))
+        todo4pro.clicked.connect(lambda: self.promote(4,todoLabel))
 
 
         todo5 = QHBoxLayout()
@@ -114,6 +136,11 @@ class MyWindow(QWidget):
         todo5.addWidget(todo5pro)
         todo5.addWidget(todo5dem)
 
+        #assign functions
+        todo5del.clicked.connect(lambda: self.delete(5,todoLabel))
+        todo5dem.clicked.connect(lambda: self.demote(5,todoLabel))
+        todo5pro.clicked.connect(lambda: self.promote(5,todoLabel))
+
         widgets = [todo1,todo2,todo3,todo4,todo5]
 
         count = 0
@@ -124,7 +151,6 @@ class MyWindow(QWidget):
                 count+=1
                 layout.addLayout(widget)
         #add item button only if list is not full
-        print(count)
         if count < 5 :
             add = QHBoxLayout()
             textEntry = QLineEdit()
@@ -185,6 +211,24 @@ class MyWindow(QWidget):
 
     def add(self,item,stopPoint):
         todo.add(item)
+        self.resetTodo(stopPoint)
+        self.repaint()
+        return
+    
+    def delete(self, item,stopPoint):
+        todo.delete(item)
+        self.resetTodo(stopPoint)
+        self.repaint()
+        return
+    
+    def promote(self, item,stopPoint):
+        todo.promote(item)
+        self.resetTodo(stopPoint)
+        self.repaint()
+        return
+    
+    def demote(self, item,stopPoint):
+        todo.demote(item)
         self.resetTodo(stopPoint)
         self.repaint()
         return
