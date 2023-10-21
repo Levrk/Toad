@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
 from PyQt5.QtCore import Qt
+import threading
 import focus
 import todo
 
@@ -28,7 +29,7 @@ class MyWindow(QWidget):
 
         # Create a focus button
         focus = QPushButton("Focus")
-        focus.clicked.connect(lambda: self.focus(time))
+        focus.clicked.connect(lambda: self.focus(time.text()))
 
         # Create a horizontal layout to hold the label and buttons
         timerControl = QHBoxLayout()
@@ -163,7 +164,8 @@ class MyWindow(QWidget):
         return layout
     
     def focus(self, time):
-        print("Focusing for ", time.text())
+        timer_process = threading.Thread(target=focus.main, args=(time,))
+        timer_process.start()
         return
 
     def changeTime(self, direction,current,obj):
