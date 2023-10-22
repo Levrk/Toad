@@ -13,6 +13,7 @@ globalClockUpdater = QTimer()
 globalInput = 30
 
 
+
 class MyWindow(QWidget):
     
     def __init__(self):
@@ -74,6 +75,8 @@ class MyWindow(QWidget):
         return layout
 
     def initTodo(self):
+        #initializes the to-do portion of the layout
+        #recalled by resetTodo
         layout = QVBoxLayout()
         todoLabel = QLabel("To Do:")
         todoLabel.setAlignment(Qt.AlignCenter)
@@ -162,7 +165,7 @@ class MyWindow(QWidget):
         todo5pro.clicked.connect(lambda: self.promote(5,todoLabel))
 
         widgets = [todo1,todo2,todo3,todo4,todo5]
-
+        #count to keep track of current # of q's 
         count = 0
         for item, widget in zip(items,widgets):
             if item == "":
@@ -196,6 +199,7 @@ class MyWindow(QWidget):
         global globalInput
         times = ["15","30","45","60","90"]
         index = times.index(current)
+        #check to ensure we do not go out of bounds
         if (direction and index !=4):
             obj.setText(times[index+1])
             globalInput = int(times[index+1])
@@ -206,20 +210,18 @@ class MyWindow(QWidget):
 
     def resetTodo(self, stopPoint):
         #resets todo list section of the UI after making changes to the list
+        
         def find_all_widgets(layout):
             #identify all widgets recursively to be removed and re-added
             widgets = []
-
             for i in range(layout.count()):
                 item = layout.itemAt(i)
                 widget = item.widget()
                 sub_layout = item.layout()
-
                 if widget:
                     widgets.append(widget)
                 if sub_layout:
                     widgets.extend(find_all_widgets(sub_layout))
-
             return widgets
 
         layout = self.layout()
@@ -241,6 +243,9 @@ class MyWindow(QWidget):
 
     def add(self,item,stopPoint):
         #add item to the list
+        if (item == ""):
+            #if textEntry field is empty, don't add
+            return
         todo.add(item)
         self.resetTodo(stopPoint)
         self.repaint()
@@ -287,8 +292,7 @@ class MyWindow(QWidget):
         else:
             return str(self.Integer_to_minutes(int(timeLeft)))
         
-
-
+#main function to be executed by script
 def main():
     app = QApplication([])
     window = MyWindow()
