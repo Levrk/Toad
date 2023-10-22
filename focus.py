@@ -3,10 +3,8 @@ from pynput.mouse import Listener
 import threading
 import time
 import sys
-import pygame
+from playsound import playsound
 
-#initialize pygame for playing alarms
-pygame.init()
 
 # Create a condition variable for synchronization with timer stopped
 condition = threading.Condition()
@@ -19,27 +17,17 @@ def main(input):
     def on_move(x, y):
         global mouse_moved
         mouse_moved = True
-        with condition:
-            condition.notify()
+        
 
     def timerComplete():
-        pygame.mixer.music.load('files/good.mp3')
-        pygame.mixer.music.play()
+        playsound("files/good.wav")
         sys.exit()
     
     
     def timerStopped():
         #timerStopped is triggered when the script does not register any mouse movement for 5 consecutive minutes
-        pygame.mixer.music.load('files/bad.mp3')
-        pygame.mixer.music.play()
-        global mouse_moved
-        # Create a listener for mouse events
-        with Listener(on_move=on_move) as listener:
-            # Wait for mouse movement
-            with condition:
-                condition.wait()
-            pygame.mixer.music.stop()
-
+        playsound("files/bad.mp3")
+        
     # Timer function
     def timer():
         global mouse_moved
@@ -53,8 +41,6 @@ def main(input):
                 return
             threading.Event().wait(1)
         timerStopped()
-
-
 
     # Create a listener for mouse events
     with Listener(on_move=on_move) as listener:
