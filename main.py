@@ -1,8 +1,17 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 import threading
+import time
 import focus
 import todo
+import os
+
+#declaring global variable to be updated by timerUpdate
+globalClock = None
+globalStartTime = None
+globalClockUpdater = QTimer()
+globalInput = 30
+
 
 class MyWindow(QWidget):
     
@@ -19,17 +28,26 @@ class MyWindow(QWidget):
         self.show()
 
     def initTimer(self):
+        global globalClock
         # Create a vertical layout to hold the timer section
         layout = QVBoxLayout()
-
+        focusClock = QHBoxLayout()
+        
         
         # Create a timer label
-        time = QLabel("25")
+        time = QLabel("30")
         time.setAlignment(Qt.AlignCenter)
 
-        # Create a focus button
+        # Create a focus/clock 
         focus = QPushButton("Focus")
         focus.clicked.connect(lambda: self.focus(time.text()))
+
+        clock = QLabel("")
+        clock.setFixedSize(100,50)
+        globalClock = clock
+
+        focusClock.addWidget(focus)
+        focusClock.addWidget(clock)
 
         # Create a horizontal layout to hold the label and buttons
         timerControl = QHBoxLayout()
@@ -47,12 +65,8 @@ class MyWindow(QWidget):
         timerControl.addWidget(time)
         timerControl.addWidget(up)
 
-        # Add the button and the horizontal layout to the vertical layout
-        layout.addWidget(focus)
-
-        #Add todo list label
-        
-        
+        #Add sub layouts to main layout
+        layout.addLayout(focusClock)
         layout.addLayout(timerControl)
 
         return layout
@@ -163,19 +177,25 @@ class MyWindow(QWidget):
             layout.addLayout(add)
         return layout
     
-    def focus(self, time):
-        timer_process = threading.Thread(target=focus.main, args=(time,))
+    def focus(self, input):
+        global globalStartTime, globalClockUpdater
+        globalStartTime = time.time()
+        globalClockUpdater.start(1000)
+        timer_process = threading.Thread(target=focus.main, args=(input,))
         timer_process.start()
         return
 
     def changeTime(self, direction,current,obj):
+        global globalInput
         #Direction is a bool and True = up and False = down
-        times = ["15","25","45","Endless"]
+        times = ["5","30","45","60","Endless"]
         index = times.index(current)
-        if (direction and index !=3):
+        if (direction and index !=4):
             obj.setText(times[index+1])
+            globalInput = int(times[index+1])
         elif(not direction and index != 0):
             obj.setText(times[index-1])
+            globalInput = int(times[index-1])
         return
 
     def resetTodo(self, stopPoint):
@@ -235,10 +255,37 @@ class MyWindow(QWidget):
         self.repaint()
         return
     
+    def updateTime(self):
+        global globalClock, globalInput
+        print(self.getTime(globalStartTime,globalInput))
+        globalClock.setText(self.getTime(globalStartTime,globalInput))
+
+    
+    def Integer_to_minutes(self, seconds):
+        minutes, seconds = divmod(seconds, 60)
+        return f"{minutes:02d}:{seconds:02d}"
+
+    def getTime(self, inputTime,startTime):
+        global globalClockUpdater
+        
+        timeLeft = int(inputTime) - ((time.time() - startTime))
+        print(inputTime)
+        print(startTime)
+        if timeLeft <= 0:
+            globalClockUpdater.stop()
+        else:
+            return str(self.Integer_to_minutes(int(timeLeft)))
+        
+
+
+
+
+
 def main():
     app = QApplication([])
     window = MyWindow()
+    globalClockUpdater.timeout.connect(window.updateTime)
     window.show()
     app.exec()
 
-main()
+main() 
