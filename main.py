@@ -44,7 +44,7 @@ class MyWindow(QWidget):
         focus = QPushButton("Focus")
         focus.clicked.connect(lambda: self.focus(time.text()))
 
-        clock = QLabel("")
+        clock = QLabel("00:00")
         clock.setFixedSize(100,50)
         globalClock = clock
 
@@ -194,7 +194,7 @@ class MyWindow(QWidget):
     def changeTime(self, direction,current,obj):
         #changes timer duration
         global globalInput
-        times = ["5","30","45","60","Endless"]
+        times = ["15","30","45","60","90"]
         index = times.index(current)
         if (direction and index !=4):
             obj.setText(times[index+1])
@@ -281,10 +281,7 @@ class MyWindow(QWidget):
     def getTime(self, inputTime,startTime):
         #gets remaining time
         global globalClockUpdater
-        
         timeLeft = int(inputTime) - ((time.time() - startTime))
-        print(inputTime)
-        print(startTime)
         if timeLeft <= 0:
             globalClockUpdater.stop()
         else:
