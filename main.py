@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
 from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QFont
 import threading
 import time
 import focus
 import todo
-
 
 #declaring global variable to be updated by timerUpdate
 globalClock = None
@@ -12,6 +12,14 @@ globalStartTime = None
 globalClockUpdater = QTimer()
 globalInput = 30
 
+
+#define fonts
+smallFont = QFont()
+smallFont.setPointSize(16)
+medFont = QFont()
+medFont.setPointSize(24)
+largeFont = QFont()
+largeFont.setPointSize(32)
 
 
 class MyWindow(QWidget):
@@ -40,9 +48,13 @@ class MyWindow(QWidget):
         # Create a timer label
         time = QLabel("30")
         time.setAlignment(Qt.AlignCenter)
+        time.setFont(medFont)
 
         # Create a focus/clock 
         focus = QPushButton("Focus")
+        focus.setFixedHeight(100)
+        focus.setStyleSheet("background-color: lightblue;")
+        focus.setFont(largeFont)
         focus.clicked.connect(lambda: self.focus(time.text()))
 
         clock = QLabel("00:00")
@@ -86,9 +98,13 @@ class MyWindow(QWidget):
         #set up item 1
         todo1 = QHBoxLayout()
         todo1del = QPushButton("x")
+        todo1del.setFixedSize(50,50)
         todo1Label = QLabel(items[0])
         todo1pro = QPushButton("↑")
         todo1dem = QPushButton("↓")
+        todo1pro.setFixedSize(50,50)
+        todo1dem.setFixedSize(50,50)
+
         todo1.addWidget(todo1del)
         todo1.addWidget(todo1Label)
         todo1.addWidget(todo1pro)
@@ -102,9 +118,13 @@ class MyWindow(QWidget):
         #set up item 2
         todo2 = QHBoxLayout()
         todo2del = QPushButton("x")
+        todo2del.setFixedSize(50,50)
         todo2Label = QLabel(items[1])
         todo2pro = QPushButton("↑")
         todo2dem = QPushButton("↓")
+        todo2pro.setFixedSize(50,50)
+        todo2dem.setFixedSize(50,50)
+
         todo2.addWidget(todo2del)
         todo2.addWidget(todo2Label)
         todo2.addWidget(todo2pro)
@@ -118,9 +138,13 @@ class MyWindow(QWidget):
         #set up item 3
         todo3 = QHBoxLayout()
         todo3del = QPushButton("x")
+        todo3del.setFixedSize(50,50)
         todo3Label = QLabel(items[2])
         todo3pro = QPushButton("↑")
         todo3dem = QPushButton("↓")
+        todo3pro.setFixedSize(50,50)
+        todo3dem.setFixedSize(50,50)
+
         todo3.addWidget(todo3del)
         todo3.addWidget(todo3Label)
         todo3.addWidget(todo3pro)
@@ -134,9 +158,13 @@ class MyWindow(QWidget):
         #set up item 4
         todo4 = QHBoxLayout()
         todo4del = QPushButton("x")
+        todo4del.setFixedSize(50,50)
         todo4Label = QLabel(items[3])
         todo4pro = QPushButton("↑")
         todo4dem = QPushButton("↓")
+
+        todo4pro.setFixedSize(50,50)
+        todo4dem.setFixedSize(50,50)
         todo4.addWidget(todo4del)
         todo4.addWidget(todo4Label)
         todo4.addWidget(todo4pro)
@@ -151,9 +179,13 @@ class MyWindow(QWidget):
         #set up item 5
         todo5 = QHBoxLayout()
         todo5del = QPushButton("x")
+        todo5del.setFixedSize(50,50)
         todo5Label = QLabel(items[4])
         todo5pro = QPushButton("↑")
         todo5dem = QPushButton("↓")
+        todo5pro.setFixedSize(50,50)
+        todo5dem.setFixedSize(50,50)
+
         todo5.addWidget(todo5del)
         todo5.addWidget(todo5Label)
         todo5.addWidget(todo5pro)
@@ -190,19 +222,23 @@ class MyWindow(QWidget):
         global globalStartTime, globalClockUpdater
         globalStartTime = time.time()
         globalClockUpdater.start(1000)
-        timer_process = threading.Thread(target=focus.main, args=(input,))
+        timer_process = threading.Thread(target=focus.main, args=(input,)) ###demo version - change to input*60
         timer_process.start()
         return
 
     def changeTime(self, direction,current,obj):
         #changes timer duration
         global globalInput
-        times = ["15","30","45","60","90"]
+        times = ["15","30","45","60","Endless"]
         index = times.index(current)
         #check to ensure we do not go out of bounds
         if (direction and index !=4):
             obj.setText(times[index+1])
-            globalInput = int(times[index+1])
+            try:
+                globalInput = int(times[index+1])
+            except: 
+                #if input is Endless
+                globalInput = 0
         elif(not direction and index != 0):
             obj.setText(times[index-1])
             globalInput = int(times[index-1])
@@ -286,7 +322,10 @@ class MyWindow(QWidget):
     def getTime(self, inputTime,startTime):
         #gets remaining time
         global globalClockUpdater
-        timeLeft = int(inputTime) - ((time.time() - startTime))
+        try:
+            timeLeft = int(inputTime) + 2 - ((time.time() - startTime))
+        except:
+            return "Active"
         if timeLeft <= 0:
             globalClockUpdater.stop()
         else:
