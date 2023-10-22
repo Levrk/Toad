@@ -20,7 +20,7 @@ def main(input):
         
 
     def timerComplete():
-        playsound("files/good.wav")
+        playsound("files/good.mp3")
         sys.exit()
     
     
@@ -32,7 +32,6 @@ def main(input):
     def timer():
         global mouse_moved
         mouse_moved = False
-        print(endTime , " minute timer started.")
         # Wait for 10 seconds (you can adjust the duration) ###needs work change to five minutes
         for _ in range(10):
             if (time.time() >= (startTime + endTime)):
@@ -44,6 +43,5 @@ def main(input):
 
     # Create a listener for mouse events
     with Listener(on_move=on_move) as listener:
-        print("Mouse tracking started. Press Ctrl+C to exit.")
         while True:
             timer()
