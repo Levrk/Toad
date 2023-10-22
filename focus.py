@@ -20,6 +20,7 @@ def main(input):
         
 
     def timerComplete():
+        #play good sound on timer completion
         playsound("files/good.mp3")
         sys.exit()
     
@@ -28,11 +29,12 @@ def main(input):
         #timerStopped is triggered when the script does not register any mouse movement for 5 consecutive minutes
         playsound("files/bad.mp3")
         
-    # Timer function
+
     def timer():
+        #to be executed repeatedly while focus.py script is active
         global mouse_moved
         mouse_moved = False
-        # Wait for 10 seconds (you can adjust the duration) ###needs work change to five minutes
+        # Wait for 10 seconds (you can adjust the duration)
         for _ in range(10):
             if (time.time() >= (startTime + endTime)):
                 timerComplete()

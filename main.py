@@ -4,7 +4,7 @@ import threading
 import time
 import focus
 import todo
-import os
+
 
 #declaring global variable to be updated by timerUpdate
 globalClock = None
@@ -16,6 +16,7 @@ globalInput = 30
 class MyWindow(QWidget):
     
     def __init__(self):
+        #initialize window
         super().__init__()
         layout = QVBoxLayout()
         timer = self.initTimer()
@@ -28,6 +29,7 @@ class MyWindow(QWidget):
         self.show()
 
     def initTimer(self):
+        #initialize timer section
         global globalClock
         # Create a vertical layout to hold the timer section
         layout = QVBoxLayout()
@@ -94,7 +96,7 @@ class MyWindow(QWidget):
         todo1dem.clicked.connect(lambda: self.demote(1,todoLabel))
         todo1pro.clicked.connect(lambda: self.promote(1,todoLabel))
 
-
+        #set up item 2
         todo2 = QHBoxLayout()
         todo2del = QPushButton("x")
         todo2Label = QLabel(items[1])
@@ -110,6 +112,7 @@ class MyWindow(QWidget):
         todo2dem.clicked.connect(lambda: self.demote(2,todoLabel))
         todo2pro.clicked.connect(lambda: self.promote(2,todoLabel))
 
+        #set up item 3
         todo3 = QHBoxLayout()
         todo3del = QPushButton("x")
         todo3Label = QLabel(items[2])
@@ -125,6 +128,7 @@ class MyWindow(QWidget):
         todo3dem.clicked.connect(lambda: self.demote(3,todoLabel))
         todo3pro.clicked.connect(lambda: self.promote(3,todoLabel))
 
+        #set up item 4
         todo4 = QHBoxLayout()
         todo4del = QPushButton("x")
         todo4Label = QLabel(items[3])
@@ -141,6 +145,7 @@ class MyWindow(QWidget):
         todo4pro.clicked.connect(lambda: self.promote(4,todoLabel))
 
 
+        #set up item 5
         todo5 = QHBoxLayout()
         todo5del = QPushButton("x")
         todo5Label = QLabel(items[4])
@@ -178,6 +183,7 @@ class MyWindow(QWidget):
         return layout
     
     def focus(self, input):
+        #focus function initializes the timer and begins updating the clock
         global globalStartTime, globalClockUpdater
         globalStartTime = time.time()
         globalClockUpdater.start(1000)
@@ -186,8 +192,8 @@ class MyWindow(QWidget):
         return
 
     def changeTime(self, direction,current,obj):
+        #changes timer duration
         global globalInput
-        #Direction is a bool and True = up and False = down
         times = ["5","30","45","60","Endless"]
         index = times.index(current)
         if (direction and index !=4):
@@ -199,8 +205,9 @@ class MyWindow(QWidget):
         return
 
     def resetTodo(self, stopPoint):
-        
+        #resets todo list section of the UI after making changes to the list
         def find_all_widgets(layout):
+            #identify all widgets recursively to be removed and re-added
             widgets = []
 
             for i in range(layout.count()):
@@ -226,46 +233,53 @@ class MyWindow(QWidget):
         for widget in widgets:
             widget.deleteLater()
 
+        #remake the todo section of the GUI
         todo = self.initTodo()
         layout.addLayout(todo)
         
 
 
     def add(self,item,stopPoint):
+        #add item to the list
         todo.add(item)
         self.resetTodo(stopPoint)
         self.repaint()
         return
     
     def delete(self, item,stopPoint):
+        #delete item from the list
         todo.delete(item)
         self.resetTodo(stopPoint)
         self.repaint()
         return
     
     def promote(self, item,stopPoint):
+        #promote item to the top of the list
         todo.promote(item)
         self.resetTodo(stopPoint)
         self.repaint()
         return
     
     def demote(self, item,stopPoint):
+        #demote item to the bottom of the list
         todo.demote(item)
         self.resetTodo(stopPoint)
         self.repaint()
         return
     
     def updateTime(self):
+        #updates clock 
         global globalClock, globalInput
-        print(self.getTime(globalStartTime,globalInput))
         globalClock.setText(self.getTime(globalStartTime,globalInput))
 
     
     def Integer_to_minutes(self, seconds):
+        #converts integers to minutes:seconds format
         minutes, seconds = divmod(seconds, 60)
         return f"{minutes:02d}:{seconds:02d}"
 
     def getTime(self, inputTime,startTime):
+        #gets remaining time
         global globalClockUpdater
         
         timeLeft = int(inputTime) - ((time.time() - startTime))
@@ -276,9 +290,6 @@ class MyWindow(QWidget):
         else:
             return str(self.Integer_to_minutes(int(timeLeft)))
         
-
-
-
 
 
 def main():
