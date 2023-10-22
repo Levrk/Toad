@@ -1,51 +1,5 @@
 import csv
 
-def todo():
-    count = read()
-    print("n^ to promote, n- to demote, n! to delete nth element")
-    print("+x to add x to list")
-    userInput = input("-> ")
-    if (userInput == ""):
-        return
-    if (userInput[0] == '+'):
-        #adding element to todo list
-        print(userInput[1:])
-        add(userInput[1:])
-        read()
-    else:
-        try:
-            n = int(userInput[0:-1])
-        except:
-            print("invalid input")
-            return
-        command = userInput[-1]
-        if (n > count or n < 1):
-            #index out of bounds
-            print("your list has no element ", n)
-        elif (command == '^'):
-            #promoting element
-            promote(n)
-            read()
-        elif (command == '-'):
-            #demoting element
-            demote(n)
-            read()
-        elif (command == '!'):
-            #deleting element
-            delete(n)
-            read()
-
-def read():
-    print("To Do: \n")
-    with open('files/todo.csv', 'r') as csv_file:
-        reader = csv.reader(csv_file)
-        count = 1
-        for row in reader:
-            item = row[0].strip()
-            print(count , ". " , item, "\n")
-            count+=1
-        return count-1
-        
 def toList():
     #returns a list of 5 elements from the todo list with blanks if there are less than 5
     list = []
@@ -61,6 +15,7 @@ def toList():
     return list
 
 def promote(item):
+    #promote item to the top of the list
     # Read the CSV file
     with open("files/todo.csv", 'r') as file:
         reader = csv.reader(file)
@@ -77,6 +32,7 @@ def promote(item):
     return
 
 def demote(item):
+    #demote item to the bottom of the list
     # Read the CSV file
     with open("files/todo.csv", 'r') as file:
         reader = csv.reader(file)
